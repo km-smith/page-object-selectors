@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0;
+            min-width: 100vw;
+            min-height: 200vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="foo">
+        <div class="bar">
+            <div class="biz">One</div>
+        </div>
+        <div class="bar">
+            <div class="biz">Two</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { query, queryAll, createPageObject } from '../dist/index.js';
+
+        const myComponent = query('.foo', {
+            bar: queryAll('.bar', {
+                biz: query('.biz'),
+            }),
+        });
+
+        const component = createPageObject(myComponent);
+
+        console.log(component());
+        console.log(component.bar);
+        console.log(component.bar[0].biz.textContent);
+        console.log(component.bar[1].biz.textContent);
+    </script>
+</body>
+</html>
