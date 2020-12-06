@@ -20,6 +20,25 @@
         </div>
     </div>
 
+    <div class="bir">
+        <div class="foo">
+            <div class="bar">
+                <div class="biz">One</div>
+            </div>
+            <div class="bar">
+                <div class="biz">Two</div>
+            </div>
+        </div>
+        <div class="foo">
+            <div class="bar">
+                <div class="biz">One</div>
+            </div>
+            <div class="bar">
+                <div class="biz">Two</div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { query, queryAll, createPageObject } from '../dist/index.js';
 
@@ -29,12 +48,15 @@
             }),
         });
 
-        const component = createPageObject(myComponent);
+        const myOtherComponent = query('.bir', {
+            myComponent: queryAll(myComponent),
+        });
 
-        console.log(component());
-        console.log(component.bar);
-        console.log(component.bar[0].biz.textContent);
-        console.log(component.bar[1].biz.textContent);
+        const componentA = createPageObject(myComponent);
+        const componentB = createPageObject(myOtherComponent);
+
+        console.log(componentA())
+        console.log(componentB.myComponent);
     </script>
 </body>
 </html>
