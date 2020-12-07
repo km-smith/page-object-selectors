@@ -53,7 +53,7 @@ export function createPageObject(schema: Schema)  {
     });
 }
 
-export function query(schema: string | Schema, children: Children): Schema {
+export function query(schema: string | Schema, children?: Children): Schema {
     if (isSchema(schema)) {
         return {
             ...schema,
@@ -67,7 +67,7 @@ export function query(schema: string | Schema, children: Children): Schema {
     };
 }
 
-export function queryAll(schema: string | Schema, children: Children): Schema {
+export function queryAll(schema: string | Schema, children?: Children): Schema {
     if (isSchema(schema)) {
         return {
             ...schema,
