@@ -5,7 +5,7 @@ function createElementProxy(element: Element, children: Children = {}): Element 
         get(target, prop) {
             if (typeof prop === 'string' && Object.keys(children).includes(prop)) {
                 const child = children[prop];
-                const [mode, selector] = child.selector;
+                const [mode, selector] = child.scope;
                 return resolveElement(element, mode, selector, child.children);
             }
             const value = Reflect.get(target, prop);
@@ -17,35 +17,36 @@ function createElementProxy(element: Element, children: Children = {}): Element 
     });
 }
 
-function resolveElement(scope: Element, mode: Mode, selector: string, children?: Children): Element | Element[] {
+function resolveElement(el: Element, mode: Mode, selector: string, children?: Children): Element | Element[] {
     switch (mode) {
         case 'Query':
-            const element = scope.querySelector(selector);
+            const element = el.querySelector(selector);
             if (!element) {
                 throw new Error('Element not found');
             }
             return createElementProxy(element, children);
         case 'QueryAll':
-            return Array.from(scope.querySelectorAll(selector)).map(element => {
+            return Array.from(el.querySelectorAll(selector)).map(element => {
                 return createElementProxy(element, children);
             });
     }
 }
 
+
 function createElementResolver(mode: Mode, selector: string, children?: Children) {
-    return function(scope?: Element): Element | Element[] {
-        return resolveElement(scope ?? document.body, mode, selector, children);
+    return function(el?: Element): Element | Element[] {
+        return resolveElement(el ?? document.body, mode, selector, children);
     }
 }
 
-export function createPageObject(schema: Schema)  {
-    const [mode, selector] = schema.selector;
+export function createPageObject(schema: Schema): PageObject  {
+    const [mode, selector] = schema.scope;
     return new Proxy(createElementResolver(mode, selector, schema.children), {
         get(target, prop) {
             const children = schema.children ?? {};
             if (typeof prop === 'string' && Object.keys(children).includes(prop)) {
                 const child = children[prop];
-                const [mode, selector] = child.selector;
+                const [mode, selector] = child.scope;
                 return resolveElement(target() as Element, mode, selector, child.children);
             }
             return Reflect.get(target, prop);
@@ -53,30 +54,49 @@ export function createPageObject(schema: Schema)  {
     });
 }
 
-export function query(schema: string | Schema, children?: Children): Schema {
-    if (isSchema(schema)) {
+export function query(scope: string | Schema, children?: Children | Schema): Schema {
+    if (isSchema(scope)) {
+        const schema: Schema = scope;
+        const selector = schema.scope[1];
         return {
-            ...schema,
-            selector: ['Query', schema.selector[1]],
+            scope: ['Query', selector],
+            children: schema.children,
+        };
+    }
+
+    if (isSchema(children)) {
+        const schema: Schema = children;
+        return {
+            scope: ['Query', scope],
+            children: schema.children,
         };
     }
 
     return {
-        selector: ['Query', schema],
+        scope: ['Query', scope],
         children,
     };
 }
 
-export function queryAll(schema: string | Schema, children?: Children): Schema {
-    if (isSchema(schema)) {
+export function queryAll(scope: string | Schema, children?: Children | Schema): Schema {
+    if (isSchema(scope)) {
+        const schema: Schema = scope;
         return {
-            ...schema,
-            selector: ['QueryAll', schema.selector[1]],
+            scope: ['QueryAll', schema.scope[1]],
+            children: schema.children,
+        };
+    }
+
+    if (isSchema(children)) {
+        const schema: Schema = children;
+        return {
+            scope: ['QueryAll', scope],
+            children: schema.children,
         };
     }
 
     return {
-        selector: ['QueryAll', schema],
+        scope: ['QueryAll', scope],
         children,
     };
 }

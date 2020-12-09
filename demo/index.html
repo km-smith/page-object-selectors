@@ -42,21 +42,28 @@
     <script type="module">
         import { query, queryAll, createPageObject } from '../dist/index.js';
 
-        const myComponent = query('.foo', {
-            bar: queryAll('.bar', {
-                biz: query('.biz'),
-            }),
+        const wrapped = query('.foo', {
+            biz: queryAll('.biz'),
         });
+        const schema = queryAll(wrapped);
 
-        const myOtherComponent = query('.bir', {
-            myComponent: queryAll(myComponent),
-        });
+        console.log(schema);
 
-        const componentA = createPageObject(myComponent);
-        const componentB = createPageObject(myOtherComponent);
-
-        console.log(componentA())
-        console.log(componentB.myComponent);
+        // const myComponent = query('.foo', {
+        //     bar: queryAll('.bar', {
+        //         biz: query('.biz'),
+        //     }),
+        // });
+        //
+        // const myOtherComponent = query('.bir', {
+        //     myComponent: queryAll(myComponent),
+        // });
+        //
+        // const componentA = createPageObject(myComponent);
+        // const componentB = createPageObject(myOtherComponent);
+        //
+        // console.log(componentA())
+        // console.log(componentB.myComponent);
     </script>
 </body>
 </html>

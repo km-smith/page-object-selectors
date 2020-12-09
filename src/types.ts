@@ -3,9 +3,13 @@ type QueryAll = 'QueryAll';
 type Mode = Query | QueryAll;
 
 type Children = Record<string, Schema>;
-type Selector = [Mode, string];
+type Scope = [Mode, string];
 
 interface Schema {
-    selector: Selector;
+    scope: Scope;
     children?: Children;
+}
+
+interface PageObject {
+    (el?: Element): Element | Element[]
 }

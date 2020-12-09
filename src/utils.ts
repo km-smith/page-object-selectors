@@ -4,7 +4,7 @@ function isMode(mode: any): mode is Mode {
     return [Query, QueryAll].includes(mode);
 }
 
-function isSelector(selector: any): selector is Selector {
+function isScope(selector: any): selector is Scope {
     return (
         Array.isArray(selector) &&
         isMode(selector[0]) &&
@@ -15,7 +15,7 @@ function isSelector(selector: any): selector is Selector {
 export function isSchema(schema: any): schema is Schema {
     return (
         typeof schema === 'object' &&
-        isSelector(schema.selector) &&
+        isScope(schema.scope) &&
         (schema.children === undefined || (typeof schema.children === 'object' && Object.values(schema.children).every(isSchema)))
     );
 }
