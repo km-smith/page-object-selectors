@@ -1,6 +1,6 @@
 {
   "name": "@kysmith/page-object-selectors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Small testing library which acts as an interface between your tests and the DOM",
   "main": "dist/index.js",
   "module": "dist/index.js",
