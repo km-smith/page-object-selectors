@@ -127,6 +127,17 @@ describe('query', () => {
         expect((pageObject() as Element).textContent).to.equal('Foo');
     });
 
+    it('returns undefined when it cant find the root element', async () => {
+        await fixture(html`
+            <div>
+                <div class="foo">Foo</div>
+            </div>
+        `);
+        const schema = query('.wont-find-me');
+        const pageObject = createPageObject(schema);
+        expect(pageObject()).to.equal(undefined);
+    });
+
     it('returns the expected child element', async () => {
         await fixture(html`
             <div>
@@ -138,10 +149,13 @@ describe('query', () => {
         `);
         const schema = query('.foo', {
             biz: query('.biz'),
+            wontFindMe: query('.wont-find-me'),
         });
         const pageObject = createPageObject(schema);
         // @ts-ignore
         expect(pageObject.biz.textContent).to.equal('This');
+        // @ts-ignore
+        expect(pageObject.wontFindMe).to.equal(undefined);
     });
 });
 
