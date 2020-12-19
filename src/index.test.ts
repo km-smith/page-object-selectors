@@ -127,6 +127,17 @@ describe('query', () => {
         expect((pageObject() as Element).textContent).to.equal('Foo');
     });
 
+    it('returns undefined when it cant find the root element', async () => {
+        await fixture(html`
+            <div>
+                <div class="foo">Foo</div>
+            </div>
+        `);
+        const schema = query('.wont-find-me');
+        const pageObject = createPageObject(schema);
+        expect(pageObject()).to.equal(undefined);
+    });
+
     it('returns the expected child element', async () => {
         await fixture(html`
             <div>
@@ -138,10 +149,13 @@ describe('query', () => {
         `);
         const schema = query('.foo', {
             biz: query('.biz'),
+            wontFindMe: query('.wont-find-me'),
         });
         const pageObject = createPageObject(schema);
         // @ts-ignore
         expect(pageObject.biz.textContent).to.equal('This');
+        // @ts-ignore
+        expect(pageObject.wontFindMe).to.equal(undefined);
     });
 });
 
@@ -158,6 +172,18 @@ describe('queryAll', () => {
         expect((pageObject() as Element[]).length).to.equal(2);
         expect((pageObject() as Element[])[0].textContent).to.equal('One');
         expect((pageObject() as Element[])[1].textContent).to.equal('Two');
+    });
+
+    it('returns undefined when it cant find the root element', async () => {
+        await fixture(html`
+            <div>
+                <div class="foo">One</div>
+                <div class="foo">Two</div>
+            </div>
+        `);
+        const schema = queryAll('.wont-find-me');
+        const pageObject = createPageObject(schema);
+        expect(pageObject()).to.equal(undefined);
     });
 
     it('returns the expected child element', async () => {
@@ -177,6 +203,7 @@ describe('queryAll', () => {
         `);
         const schema = queryAll('.foo', {
             biz: queryAll('.biz'),
+            wontFindMe: queryAll('.wont-find-me'),
         });
         const pageObject = createPageObject(schema);
         // @ts-ignore
@@ -193,5 +220,7 @@ describe('queryAll', () => {
         expect(pageObject()[1].biz[0].textContent).to.equal('Three');
         // @ts-ignore
         expect(pageObject()[1].biz[1].textContent).to.equal('Four');
+        // @ts-ignore
+        expect(pageObject().wontFindMe).to.equal(undefined);
     });
 });

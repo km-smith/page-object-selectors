@@ -17,12 +17,12 @@ function createElementProxy(element: Element, children: Children = {}): Element 
     });
 }
 
-function resolveElement(el: Element, mode: Mode, selector: string, children?: Children): Element | Element[] {
+function resolveElement(el: Element, mode: Mode, selector: string, children?: Children): QueryResult {
     switch (mode) {
         case 'Query':
             const element = el.querySelector(selector);
             if (!element) {
-                throw new Error('Element not found');
+                return undefined;
             }
             return createElementProxy(element, children);
         case 'QueryAll':
@@ -34,7 +34,7 @@ function resolveElement(el: Element, mode: Mode, selector: string, children?: Ch
 
 
 function createElementResolver(mode: Mode, selector: string, children?: Children) {
-    return function(el?: Element): Element | Element[] {
+    return function(el?: Element): QueryResult {
         return resolveElement(el ?? document.body, mode, selector, children);
     }
 }

@@ -5,11 +5,13 @@ type Mode = Query | QueryAll;
 type Children = Record<string, Schema>;
 type Scope = [Mode, string];
 
+type QueryResult = undefined | Element | Element[];
+
 interface Schema {
     scope: Scope;
     children?: Children;
 }
 
 interface PageObject {
-    (el?: Element): Element | Element[]
+    (el?: Element): QueryResult;
 }
