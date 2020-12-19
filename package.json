@@ -7,6 +7,10 @@
   "types": "dist/index.d.ts",
   "author": "kyle.smith.m@gmail.com",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:km-smith/page-object-selectors.git"
+  },
   "scripts": {
     "start": "concurrently --kill-others --names tsc,wds \"yarn tsc:watch\" \"wds --node-resolve --open\"",
     "tsc:watch": "tsc --watch",
