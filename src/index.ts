@@ -14,6 +14,9 @@ function createElementProxy(element: Element, children: Children = {}): Element 
             }
             return value;
         },
+        set(target: Element, prop: string, value: any) {
+            return Reflect.set(target, prop, value);
+        }
     });
 }
 
