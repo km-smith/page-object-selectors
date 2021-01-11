@@ -15,6 +15,7 @@
     "start": "concurrently --kill-others --names tsc,wds \"yarn tsc:watch\" \"wds --node-resolve --open\"",
     "tsc:watch": "tsc --watch",
     "build": "tsc",
+    "prepare": "yarn build",
     "test": "yarn build && wtr --coverage",
     "test:watch": "wtr --watch"
   },
